@@ -63,4 +63,9 @@ public class GameController : MonoBehaviour
         return unitInfos[id-1].cost <= energyValue;
     }
 
+    public void DecreaseEnergyValue(int id) 
+    {
+        int value = unitInfos[id-1].cost;
+        energyValue -= value;
+    }
 }

@@ -128,7 +128,22 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
         {
             return;
         }
-        ReturnToInitPos();
+        button.transform.localScale = Vector3.one;
+        if (ShowCharacter) //顯示模型
+        {
+            imgEnergyT.gameObject.SetActive(true);
+            //射線檢測
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits = Physics.RaycastAll(ray);
+
+            //檢測當前使用卡牌是否在卡片使用範圍內
+
+            imgEnergyT.DOLocalMove(imgEnergyT.localPosition + new Vector3(0, 50, 0), 0.5f).OnComplete(() => { UseCurrentCard(hits);});
+        }
+        else //顯示卡牌
+        {
+            ReturnToInitPos();
+        }
     }
     /// <summary>
     /// 屏幕座標轉換世界座標
@@ -141,6 +156,9 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
         return cam.ScreenToWorldPoint(new Vector3(screenPoint.x, screenPoint.y, planeZ));
     }
 
+    /// <summary>
+    /// 不使用卡牌返回初始位置
+    /// </summary>
     private void ReturnToInitPos()
     {
         button.gameObject.SetActive(true);
@@ -150,6 +168,30 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
         transform.DOLocalMove(initPos, 0.2f).OnComplete(() => { isDraging = false; });
     }
 
+    /// <summary>
+    /// 使用當前卡牌
+    /// </summary>
+    private void UseCurrentCard(RaycastHit[] hits) 
+    {
+        //聖水消耗
+        GameController.Instance.DecreaseEnergyValue(id);
+        //循環射線檢測所有的碰撞器有沒有地面
+        for (int i = 0; i < hits.Length; i++)
+        {
+            RaycastHit hit = hits[i];
+            if (hit.collider != null&&hit.collider.tag =="Plane") 
+            {
+                //如果有 生成對應卡牌ID的怪物單位
+
+            }
+        }
+
+        //用掉當前卡牌後位置為空 需要補上卡牌
+
+        //使用卡牌後的後續工作
+
+        //例如消除卡牌
+    }
 
 }
 
