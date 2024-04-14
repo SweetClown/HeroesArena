@@ -61,16 +61,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\CharactersAnimationEvent.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleAudio.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModulePhysics.cs" />
     <Compile Include="Assets\Scripts\GameStarter.cs" />
+    <Compile Include="Assets\Scripts\Building.cs" />
     <Compile Include="Assets\Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModulePhysics2D.cs" />
     <Compile Include="Assets\Scripts\Unit.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUI.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleSprite.cs" />
+    <Compile Include="Assets\Scripts\Characters.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleEPOOutline.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUtils.cs" />

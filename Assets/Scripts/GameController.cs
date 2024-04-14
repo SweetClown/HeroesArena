@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 /// <summary>
 /// Game Controller
@@ -12,6 +13,9 @@ public class GameController : MonoBehaviour
     public float energyValue;
     public float leftTime;
     public List<UnitInfo> unitInfos;
+    public GameObject[] unitGos; //所有預製體 (遊戲物體)的資源
+    public Building[] PurpleBuilding;
+    public Building[] OrangeBuilding;
 
     private void Awake()
     {
@@ -68,4 +72,87 @@ public class GameController : MonoBehaviour
         int value = unitInfos[id-1].cost;
         energyValue -= value;
     }
+    /// <summary>
+    /// 生成人物單位
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="pos">生成位置</param>
+    /// <param name="isOrange">是否屬於橙色方</param>
+
+    public void CreateUnit(int id, Vector3 pos, bool isOrange = true) 
+    {
+        GameObject go = Instantiate(unitGos[id - 1]);
+        go.transform.position = pos;
+        switch (id) 
+        {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 8:
+            case 11:
+                Unit unit = go.GetComponent<Unit>();
+                unit.isOrange = isOrange;
+                unit.unitInfo = unitInfos[id - 1];
+                break;
+            case 6:
+                for (int i = 0; i < go.transform.childCount ; i++)
+                {
+                    Unit u = go.transform.GetChild(i).GetComponent<Unit>();
+                    u.isOrange = isOrange;
+                    u.unitInfo = unitInfos[id - 1];
+                }
+                break;
+            case 7:
+                for (int i = 0; i < go.transform.childCount; i++)
+                {
+                    Unit u = go.transform.GetChild(i).GetComponent<Unit>();
+                    u.isOrange = isOrange;
+                    u.unitInfo = unitInfos[id - 1];
+                }
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    /// <summary>
+    /// 某個單位獲取默認攻擊目標的方法
+    /// </summary>
+    /// <param name="unit">當前單位</param>
+    /// <param name="isOrange">是否屬於橙色方</param>
+    public void UnitGetTargetPos(Unit unit, bool isOrange) 
+    {
+        Building[] building = isOrange ? PurpleBuilding : OrangeBuilding ;
+        //Building[] building;
+        //if (isOrange)
+        //{
+        //    building = OrangeBuilding;
+        //}
+        //else 
+        //{
+        //    building = PurpleBuilding;
+        //}
+        if (!building[0]) 
+        {
+            //國王死亡
+            return;
+        }
+        //國王沒有死亡, 根據當前單位x座標與國王塔座標比較,判斷走左路還是右路
+        int index = unit.transform.position.x <= building[0].transform.position.x ? 1 : 2;
+        //當前索引對應建築是否已死亡
+        if (building[index].isDead)
+        {
+            //索引對應建築陣亡, 當前單位把國王塔設定為預設攻擊對象
+            unit.defaultTarget = building[0];
+        }
+        else 
+        {
+            //索引對應建築沒有陣亡, 當前單位把左路弓箭塔或右路弓箭塔設定為預設攻擊對象
+            unit.defaultTarget = building[index];
+        }
+    }
+
 }

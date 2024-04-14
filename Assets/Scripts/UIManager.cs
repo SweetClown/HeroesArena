@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.UIElements.Experimental;
 
 /// <summary>
 /// UI Manager
@@ -75,7 +76,6 @@ public class UIManager : MonoBehaviour
         if (currentBoardNum < maxContentNum) 
         {
             MoveCardToBoard(currentBoardNum);
-            currentBoardNum++;
         }
     }
     /// <summary>
@@ -87,6 +87,7 @@ public class UIManager : MonoBehaviour
         Transform t = nextCardT.GetChild(0);
         t.SetParent(boardTrans);
         t.DOScale(Vector3.one, 0.2f);
+        t.GetComponent<Card>().posID = posID;
         t.DOLocalMove(BoardCardT[posID].localPosition , 0.2f).OnComplete(() => { CompeleteMoveTween(t); });//匿名函數
         
     }
@@ -95,7 +96,29 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void CompeleteMoveTween(Transform t) 
     {
+        currentBoardNum++;
         CreateNewCard();
         t.GetComponent<Card>().SetInitPos();
     }
+
+    /// <summary>
+    /// 用掉卡牌後補充卡牌
+    /// </summary>
+    /// <param name="posID"></param>
+    public void UseCard(int posID) 
+    {
+        currentBoardNum--;
+        MoveCardToBoard(posID);
+    }
+
+    /// <summary>
+    /// 將當前使用卡牌的id從列表中移除
+    /// </summary>
+    /// <param name="id"></param>
+    public void RemoveCardIDInList(int id) 
+    {
+        CardIDList.Remove(id);
+    }
+
+
 }

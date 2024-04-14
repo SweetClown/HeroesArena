@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-/// <summary>
-/// Card UI
-/// </summary>
+using UnityEngine.UIElements;
+
 public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public int id;
-    public Button button;//卡牌按鈕
+    public UnityEngine.UI.Button button;//卡牌按鈕
     private Vector3 initPos;
     private Tween tween;
     private bool isDraging;
@@ -20,6 +19,8 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
     public Text cardText;//卡牌名字
     public GameObject magicCircleGo;//法術釋放範圍顯示遊戲模型
     public Transform imgEnergyT;//聖水圖片顯示UI遊戲模型
+    public int posID;
+    public GameObject[] modelGos; //當前卡牌使用前, 想要生成的模型模組
 
 
 
@@ -27,6 +28,15 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
     void Start()
     {
         cam = Camera.main;
+        for (int i = 0; i < modelGos.Length; i++) 
+        {
+            modelGos[i].SetActive(false);
+        }
+        if (id <= 8)
+        {
+            modelGos[id - 1].SetActive(true);
+            magicCircleGo.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -181,12 +191,17 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IB
             RaycastHit hit = hits[i];
             if (hit.collider != null&&hit.collider.tag =="Plane") 
             {
+                Vector3 targetpos = hit.point;
                 //如果有 生成對應卡牌ID的怪物單位
-
+                GameController.Instance.CreateUnit(id ,targetpos);
+                //用掉當前卡牌後位置為空 需要補上卡牌
+                UIManager.Instance.UseCard(posID);
+                //使用卡牌後的後續工作
+                UIManager.Instance.RemoveCardIDInList(id);
+                Destroy(gameObject);
             }
         }
 
-        //用掉當前卡牌後位置為空 需要補上卡牌
 
         //使用卡牌後的後續工作
 
